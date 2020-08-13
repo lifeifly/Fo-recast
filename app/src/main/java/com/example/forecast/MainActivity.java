@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.forecast.citymanager.CityManagerActivity;
+import com.example.forecast.citymanager.SearchCityActivity;
 import com.example.forecast.database.DBManager;
 
 import java.util.ArrayList;
@@ -47,6 +48,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             cityList.add("北京");
             cityList.add("上海");
             cityList.add("沈阳");
+        }
+        //因为可能搜索界面点击跳转到此界面,会传值，尝试获取下
+        Intent intent=getIntent();
+        String city=intent.getStringExtra("city");
+        if (!cityList.contains(city)&&city!=null){
+            cityList.add(city);
         }
         //初始化ViewPager页面
         initPager();
@@ -116,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intent = new Intent(MainActivity.this, CityManagerActivity.class);
                 break;
             case R.id.iv_more:
+                intent=new Intent(this, SearchCityActivity.class);
                 break;
         }
         startActivity(intent);
