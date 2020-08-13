@@ -4,12 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import com.example.forecast.citymanager.CityManagerActivity;
+import com.example.forecast.database.DBManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         moreIv.setOnClickListener(this);
 
         fragmentList=new ArrayList<>();
-        cityList=new ArrayList<>();
+        cityList= DBManager.queryCity();//获取数据库包含的城市信息列表
         imageList=new ArrayList<>();
 
         if (cityList.size()==0){
@@ -108,11 +110,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        Intent intent = null;
         switch (v.getId()){
             case R.id.iv_add:
+                intent = new Intent(MainActivity.this, CityManagerActivity.class);
                 break;
             case R.id.iv_more:
                 break;
         }
+        startActivity(intent);
     }
 }

@@ -3,9 +3,7 @@ package com.example.forecast;
 import android.app.AlertDialog;
 import android.os.Bundle;
 
-import androidx.fragment.app.Fragment;
-
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +11,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.forecast.base.BaseFragment;
 import com.example.forecast.bean.WeatherBean;
+import com.example.forecast.database.DBManager;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 
@@ -48,12 +46,23 @@ public class CityWeatherFragment extends BaseFragment implements View.OnClickLis
 
     @Override
     public void onSuccess(String result) {
+        //解析并展示数据
         parseShowData(result);
+        //更新数据
+        int i = DBManager.updateData(city, result);
+        if (i <= 0) {
+            //更新数据库失败，说明没有这个数据，新增这条记录
+            DBManager.addData(city, result);
+        }
     }
 
     @Override
     public void onError(Throwable ex, boolean isOnCallback) {
-
+//数据库当中查找上一次信息显示在Fragment中
+        String s = DBManager.queryData(city);
+        if (!TextUtils.isEmpty(s)){
+            parseShowData(s);
+        }
     }
 
     private void parseShowData(String result) {
