@@ -1,6 +1,7 @@
 package com.example.forecast;
 
 import android.app.AlertDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.text.TextUtils;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.forecast.base.BaseFragment;
@@ -19,15 +21,20 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import static android.content.Context.MODE_PRIVATE;
+
 
 public class CityWeatherFragment extends BaseFragment implements View.OnClickListener {
     private TextView tempTv, cityTv, conditionTv, windTv, tempRangeTv, dateTv, clothIndexTv, carIndexTv, coldTv, sportTv, raysIndexTv;
     private ImageView dayIv;
+    private ScrollView outLayout;
     private LinearLayout futureLayout;
     private String url1 = "http://api.map.baidu.com/telematics/v3/weather?location=";
     private String url2 = "&output=json&ak=FkPhtMBK0HTIQNh7gG4cNUttSTyr0nzo";
     private List<WeatherBean.ResultsBean.IndexBean> indexList;
     private String city;
+    private SharedPreferences pref;
+    private int bgNum;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,6 +42,7 @@ public class CityWeatherFragment extends BaseFragment implements View.OnClickLis
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_city_weather, container, false);
         initView(view);
+        exchangeBg();
         //可以通过Activity传值获取到当前fragment加载的时某个地方的天气情况
         Bundle bundle = getArguments();
         city = bundle.getString("city");
@@ -43,7 +51,23 @@ public class CityWeatherFragment extends BaseFragment implements View.OnClickLis
         loadData(url);
         return view;
     }
+    //        换壁纸的函数
+    public void exchangeBg(){
+        pref = getActivity().getSharedPreferences("bg_pref", MODE_PRIVATE);
+        bgNum = pref.getInt("bg", 2);
+        switch (bgNum) {
+            case 0:
+                outLayout.setBackgroundResource(R.mipmap.bg);
+                break;
+            case 1:
+                outLayout.setBackgroundResource(R.mipmap.bg2);
+                break;
+            case 2:
+                outLayout.setBackgroundResource(R.mipmap.bg3);
+                break;
+        }
 
+    }
     @Override
     public void onSuccess(String result) {
         //解析并展示数据
@@ -107,6 +131,8 @@ public class CityWeatherFragment extends BaseFragment implements View.OnClickLis
 
     private void initView(View view) {
         //用于初始化控件操作
+        outLayout=view.findViewById(R.id.out_layout);
+
         tempTv = view.findViewById(R.id.frag_tv_currentemp);
         cityTv = view.findViewById(R.id.frag_tv_city);
         conditionTv = view.findViewById(R.id.frag_tv_condition);

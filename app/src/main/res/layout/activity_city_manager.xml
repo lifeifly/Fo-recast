@@ -30,7 +30,6 @@
             android:id="@+id/city_tv_title"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="城市管理"
             android:textSize="18sp"
             android:textStyle="bold" />
 
